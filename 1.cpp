@@ -14,7 +14,7 @@ double derivative(double x) {
     return 2 * x + 1 / x;
 }
 
-// Функция для вывода таблицы итераций для метода Ньютона и простой итерации
+// Функция для вывода таблицы итераций для метода Ньютона
 void PrintTable(int iteration, double xn, double xn_plus_1, double difference) {
     cout << iteration << "\t" <<setw(10) << xn << "\t"<< setw(12) << xn_plus_1 << "\t"<< setw(14) << difference << endl;
 }
@@ -45,14 +45,14 @@ void PrintTableSimpleIterationMethod(int iteration, double xn, double xn_plus_1,
 }
 
 // Метод Ньютона
-double NewtonMethod(double x0, double epsilon) {
+double newtonMethod(double x0, double epsilon) {
     double xn = x0;
     double xn_plus_1 = xn - function(xn) / derivative(xn);
     int iteration = 1;
 
     cout << "Iteration\txn\t\txn+1\t\tdifference" << endl;
     while (abs(xn_plus_1 - xn) > epsilon) {
-        PrintTable(iteration, xn, xn_plus_1, abs(xn_plus_1 - xn));
+        cout << iteration << "\t" << setw(10) << xn << "\t" << setw(12) << xn_plus_1 << "\t" << setw(14) << abs(xn_plus_1 - xn) << endl;
         xn = xn_plus_1;
         xn_plus_1 = xn - function(xn) / derivative(xn);
         iteration++;
@@ -60,20 +60,20 @@ double NewtonMethod(double x0, double epsilon) {
     return xn_plus_1;
 }
 
-// Метод простой итерации
-double SimpleIterationMethod(double x0, double epsilon) {
+// Метод простых итераций
+double simpleIterationMethod(double x0, double epsilon) {
     double xn = x0;
-    double xn_plus_1 = xn - function(xn) / derivative(x0);
     int iteration = 1;
 
     cout << "Iteration\txn\t\txn+1\t\tdifference" << endl;
-    while (abs(xn_plus_1 - xn) > epsilon) {
-        PrintTableSimpleIterationMethod(iteration, xn, xn_plus_1, abs(xn_plus_1 - xn));
+    do {
+        double xn_plus_1 = sqrt(6 - log(xn)); // Преобразуем уравнение x^2 + log(x) - 6 = 0 к виду x = sqrt(6 - log(x))
+        cout << iteration << "\t" << setw(10) << xn << "\t" << setw(10) << xn_plus_1 << "\t" << setw(14) << abs(xn_plus_1 - xn) << endl;
         xn = xn_plus_1;
-        xn_plus_1 = xn - function(xn) / derivative(x0);
         iteration++;
-    }
-    return xn_plus_1;
+    } while (abs(function(xn)) > epsilon);
+
+    return xn;
 }
 
 double HalfDivisionMethod(double LeftPoint, double RightPoint,double epsilon)
@@ -104,11 +104,11 @@ int main() {
     system("chcp 65001"); // Команда для поддержки русского языка в консоли
 
     cout << "Корни, найденные методом Ньютона:" << endl;
-    double rootNewton = NewtonMethod((a + b) / 2, epsilon);
+    double rootNewton = newtonMethod((a + b) / 2, epsilon);
     cout << "Root: " << rootNewton << endl;
 
     cout << "\nКорни, найденные простым итерационным методом:" << endl;
-    double rootSimpleIteration = SimpleIterationMethod((a + b) / 2, epsilon);
+    double rootSimpleIteration = simpleIterationMethod((a + b) / 2, epsilon);
     cout << "Root: " << rootSimpleIteration << endl;
 
     cout << "\nКорни, найденные методом половинного деления:" << endl;
