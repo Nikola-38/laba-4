@@ -15,40 +15,10 @@ double derivative(double x) {
     return 2 * (x - 6) + 1 / x;
 }
 
-
-// Вспомогательная функция для метода простых итераций
-// Функция g(x) для метода простых итераций
-double g(double x) {
-    return exp((6 - sqrt(x * x)) / 2);
-}
-
-double simpleIterationMethod(double x0, double epsilon) {
-    double xn = x0;
-    double xn_plus_1;
-    int iteration = 0;
-
-    cout << "Iteration\txn\t\txn+1\t\tdifference" << endl;
-
-    do {
-        xn_plus_1 = g(xn);
-        cout << iteration << "\t" << setprecision(10) << xn << "\t" << setprecision(10) << xn_plus_1 << "\t" << fixed << setprecision(6) << abs(xn_plus_1 - xn) << endl;
-
-        if (abs(xn_plus_1 - xn) < epsilon) {
-            return xn_plus_1; // Возвращаем найденный корень
-        }
-
-        xn = xn_plus_1;
-        iteration++;
-    } while (iteration < 50);
-    return xn_plus_1; // Возвращаем найденный корень
-
-}
-
 // Метод отделения корней
-pair<double, double> separate_roots(double a, double b, double epsilon) {
+void separate_roots(double& a, double& b, double epsilon) {
     if (function(a) * function(b) >= 0) {
         cout << "На концах отрезка [a, b] функция имеет одинаковые знаки, метод отделения корней не может быть применен." << endl;
-        return make_pair(NAN, NAN);
     }
 
     double c = a;
@@ -62,17 +32,59 @@ pair<double, double> separate_roots(double a, double b, double epsilon) {
             a = c;
         }
     }
-
-    return make_pair(a, b);
 }
+
+// Комбинированный метод секущих-хорд
+double CombinedMethod(double x0, double x1, double epsilon) {
+    double x_prev = x0;
+    double x_curr = x1;
+    int iteration = 1;
+
+    cout << "N\tx" << endl;
+    cout << "---------------------" << endl;
+
+    while (abs(x_curr - x_prev) > epsilon) {
+        double f_prev = function(x_prev);
+        double f_curr = function(x_curr);
+        double delta_x = x_curr - x_prev;
+        double delta_f = f_curr - f_prev;
+
+        double x_next = x_curr - (x_curr - x_prev) * f_curr / delta_f;
+
+        cout << iteration++ << "\t" << x_next << endl;
+
+        x_prev = x_curr;
+        x_curr = x_next;
+    }
+
+    return x_curr;
+}
+
+//метод Хорд: a, b - пределы хорды
+double chordMethod(double a, double b, double epsilon) {
+    int iterator = 1;
+
+    cout << "N\ta\t\tb\t\tb-a" << endl;
+    cout << "---------------------------------" << endl;
+
+    while(abs(b - a) >= epsilon) {
+        cout << iterator << setw(10) << a << setw(14) << b << setw(14) << b - a << endl;
+
+        a = a - (b - a) * function(a) / (function(b) - function(a));
+        b = b - (a - b) * function(b) / (function(a) - function(b));
+        iterator++;
+    }
+    return b;
+}
+
 
 // Метод половинного деления для поиска корня
 double HalfDivisionMethod(double a, double b, double epsilon) {
     int iteration = 1;
     double midPoint;
 
-    cout << "N\ta\t\tb\t\tb-a" << std::endl;
-    cout << "---------------------------------" << std::endl;
+    cout << "N\ta\t\tb\t\tb-a" << endl;
+    cout << "---------------------------------" << endl;
 
     if (function(a) * function(b) > 0) {
         cout << "Интервал выбран неправильно. В данном сегменте нет решения." << endl;
@@ -94,26 +106,26 @@ double HalfDivisionMethod(double a, double b, double epsilon) {
 
 int main() {
     double a = 0.0; // Начало интервала
-    double b = 5; // Конец интервала
+    double b = 5.0; // Конец интервала
     double epsilon = 0.0001; // Погрешность
-    double X0 =  0.5; 
+
     system("chcp 65001"); // Команда для поддержки русского языка в консоли
 
-    cout << "\nКорни, найденные простым итерационным методом:" << endl;
-    double rootSimpleIteration = simpleIterationMethod(X0, epsilon);
-    if (!isnan(rootSimpleIteration)) {
-        cout << "Root: " << setprecision(6) << rootSimpleIteration << endl;
-    }
-    
-    cout << "Интервалы, содержащие корни, найденные методом отделения корней:" << endl;
-    pair<double, double> rootInterval = separate_roots(a, b, epsilon);
-    if (!isnan(rootInterval.first) && !isnan(rootInterval.second)) {
-        cout << "Интервал: [" << rootInterval.first << ", " << rootInterval.second << "]" << endl;
-    };
-
+   
     cout << "\nКорни, найденные методом половинного деления:" << endl;
     double rootHalfDivision = HalfDivisionMethod(a, b, epsilon);
     cout << "Root: " << rootHalfDivision << endl;
+
+    separate_roots(a, b, epsilon);
+
+    cout << "\nКорни, найденные комбинированным методом секущих – хорд :" << endl;
+    double rootIteration =CombinedMethod(a, b, epsilon);
+    cout << "Root: " << rootIteration << endl;
+
+    cout << "Корни, найденные методом секущих:" << endl;
+    double rootSecant = chordMethod(a, b, epsilon);
+    cout << "Root: " << rootSecant << endl;
+
 
     return 0;
 }
