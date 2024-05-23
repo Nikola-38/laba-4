@@ -25,7 +25,7 @@ vector<int> func3(vector<int>& array) {
     vector<int> result(array.size()); // создаём пустой вектор
     for (int i = 0; i < array.size(); i++) { // проходимся по вектору
         result[i] = array[i];
-        if (i % 2 == 0 && array[i] % 2 == 0) { // если индекс чётный и само число чётное, то
+        if (i % 2 == 0 && array[i] % 2 == 0) { // если индекс нечётный и само число чётное, то
             int temp = result[i]; // выполняем заменц цифр
             int last_digit = temp % 10; // берём посдеднюю цифру
             temp /= 10; // берём первую цифру
@@ -36,7 +36,7 @@ vector<int> func3(vector<int>& array) {
     return result;
 }
 
-vector<int> func4(vector<int>& array){
+vector<int> func4(vector<int> array){
    int firstElement = array[0]; // Сохранение первого элемента
     // Сдвиг всех элементов на одну позицию вперед
     for (size_t i = 0; i < array.size() - 1; ++i) {
@@ -49,7 +49,7 @@ vector<int> func4(vector<int>& array){
 }
 
 void func5(vector<int>& array_int, vector<int>& unique_elements, vector<int>& counts) {
-    sort(array_int.begin(), array_int.end()); 
+    sort(array_int.begin(), array_int.end());
 
     for (int num : array_int) {
         if (unique_elements.empty() || num != unique_elements.back()) {
@@ -59,12 +59,23 @@ void func5(vector<int>& array_int, vector<int>& unique_elements, vector<int>& co
             counts.back()++;
         }
     }
+
+    // Вывод массива уникальных элементов
+    cout << "Уникальные элементы: ";
+    for (int i = 0; i < unique_elements.size(); i++) {
+        cout << unique_elements[i] << " ";
+    }
+    cout << endl;
 }
+
+//вывести массив
 
 int main() {
     int n = 10;
     int n1 = 50;
     int cnt = 0;
+system("chcp 65001"); 
+
     double mean_value, sum_of_squares;
     random_device rd;
     minstd_rand gen(rd());
@@ -94,13 +105,13 @@ int main() {
     cout << endl;
 
 
-    vector<int> array1 = {25, 73, 100, 22, 82};
-    vector<int> modif = func4(array1);
+    vector<int> modif = func4(array);
     cout << "Исходный массив 2: ";
-    for (int j = 0; j < array1.size(); j++) {
-        cout << array1[j] << " ";
+    for (int j = 0; j < array.size(); j++) {
+        cout << array[j] << " ";
     }
      cout << endl;
+
     cout << "Модифицированный массив 2: ";
     for (int num : modif) {
         cout << num << " ";
